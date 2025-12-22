@@ -2,18 +2,19 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
 
-useEffect(() => {
-  const handleAuth = async () => {
-    await supabase.auth.getSession(); // this initializes from URL fragment
-  };
-  handleAuth();
-}, []);
-
-
 export default function Dashboard() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
+  // Initialize session from OAuth fragment
+  useEffect(() => {
+    const handleAuth = async () => {
+      await supabase.auth.getSession(); // reads the #access_token fragment
+    };
+    handleAuth();
+  }, []);
+
+  // Check if user is logged in
   useEffect(() => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
