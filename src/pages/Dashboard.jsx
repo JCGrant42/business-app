@@ -5,32 +5,51 @@ import { useNavigate } from "react-router-dom";
 export default function Dashboard() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [companies, setCompanies] = useState([]);
 
-  // Initialize session from OAuth fragment
   useEffect(() => {
-    const handleAuth = async () => {
-      await supabase.auth.getSession(); // reads the #access_token fragment
-    };
-    handleAuth();
-  }, []);
+    const init = async () => {
+      // 1️⃣ Ensure session is loaded from URL fragment
+      const { data: sessionData } = await supabase.auth.getSession();
 
-  // Check if user is logged in
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-
-      if (!data.session) {
+      if (!sessionData.session) {
         navigate("/");
         return;
       }
 
+      // 2️⃣ CALL THE EDGE FUNCTION (THIS WAS MISSING)
+      const { data, error } = await supabase.functions.invoke(
+        "login-bootstrap"
+      );
+
+      if (error) {
+        console.error("Edge function error:", error);
+        return;
+      }
+
+      console.log("Companies returned:", data);
+      setCompanies(data);
       setLoading(false);
     };
 
-    checkSession();
+    init();
   }, [navigate]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>Loading…</p>;
 
-  return <h1>Dashboard (Logged In)</h1>;
+  return (
+    <div>
+      <h1>Dashboard</h1>
+
+      {companies.length === 0 ? (
+        <p>No companies yet</p>
+      ) : (
+        <ul>
+          {companies.map((c) => (
+            <li key={c.company_id}>{c.company_name}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 }
