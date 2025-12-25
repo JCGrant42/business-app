@@ -2,21 +2,17 @@ import { supabase } from "../supabaseClient";
 
 export default function Login() {
   const signIn = async (provider) => {
-    // Force logout to ensure user chooses an account
-    await supabase.auth.signOut({ redirectTo: "/" });
+    // Fully clear session from local storage
+    await supabase.auth.signOut();
 
-    // Wait a tiny bit for logout to clear session
-    setTimeout(async () => {
-      await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/`,
-          queryParams: {
-            prompt: "select_account",
-          },
-        },
-      });
-    }, 500);
+    // Build the OAuth URL manually to ensure prompt
+    const { data } = supabase.auth.getUrlForProvider(provider, {
+      redirectTo: `${window.location.origin}/`,
+      queryParams: { prompt: "select_account" },
+    });
+
+    // Redirect manually to the OAuth provider
+    window.location.href = data.url;
   };
 
   return (
