@@ -73,7 +73,7 @@ export default function Navbar({ session }) {
       {/* RIGHT */}
       {!session ? (
         <>
-          <button onClick={() => navigate("/")}>Home</button>
+          {/* <button onClick={() => navigate("/")}>Home</button> */}
           <button onClick={() => navigate("/login")}>Create Dashboard</button>
           <button onClick={() => navigate("/login")}>Login</button>
         </>
