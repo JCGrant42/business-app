@@ -118,8 +118,8 @@ function AppInner() {
 
 export default function App() {
   return (
-    <Router>
+    <>
       <AppInner />
-    </Router>
+    </>
   );
 }
