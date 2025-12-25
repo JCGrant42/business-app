@@ -22,7 +22,7 @@ export default function CreateDashboard() {
         await supabase.functions.invoke("login-bootstrap");
 
       setHasTrial(
-        data?.some((d) => d.plan_status === "trial")
+        data?.some((d) => d.status === "trial")
       );
     };
 

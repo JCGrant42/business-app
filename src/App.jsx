@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Navbar from "./components/Navbar";
 import NoAccess from "./pages/NoAccess";
+import CreateDashboard from "./pages/CreateDashboard";
 
 function AppInner() {
   const navigate = useNavigate();
