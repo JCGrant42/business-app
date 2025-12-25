@@ -38,7 +38,7 @@ export default function CreateDashboard() {
         "create_dashboard",
         {
             body: {
-            name: dashboardName
+            name: name.trim()
             }
         }
     );
