@@ -3,27 +3,30 @@ import { supabase } from "../supabaseClient";
 export default function Login() {
   const signIn = async (provider, redirectTo = "/") => {
     try {
-      // 1️⃣ Clear any existing session
-      await supabase.auth.signOut({ redirectTo: window.location.origin });
+      // Clear any existing session
+      await supabase.auth.signOut();
 
-      // 2️⃣ Save the redirect path (e.g., dashboard creation) in localStorage
+      // Save where to redirect after login
       localStorage.setItem("postLoginRedirect", redirectTo);
 
-      // 3️⃣ Get the OAuth URL with prompt to force account selection
-      const { data, error } = supabase.auth.getUrlForProvider(provider, {
-        redirectTo: window.location.origin,
-        queryParams: { prompt: "select_account" },
+      // Start OAuth login with forced account selection
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: window.location.origin,
+          queryParams: { prompt: "select_account" },
+        },
       });
 
       if (error) {
-        console.error("Error getting OAuth URL:", error);
+        console.error("Login failed:", error);
         return;
       }
 
-      // 4️⃣ Redirect the browser to the provider's OAuth page
-      window.location.href = data.url;
+      // The redirect happens automatically; no need for window.location.href
+      console.log("Redirecting to OAuth provider...");
     } catch (err) {
-      console.error("Login failed:", err);
+      console.error("Login error:", err);
     }
   };
 
