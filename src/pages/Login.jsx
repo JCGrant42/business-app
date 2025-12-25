@@ -1,23 +1,22 @@
 import { supabase } from "../supabaseClient";
-import { useLocation } from "react-router-dom";
 
 export default function Login() {
-  const location = useLocation();
-
-  // Read redirect target from query string
-  const params = new URLSearchParams(location.search);
-  const redirectTo = params.get("redirect") || "/";
-
   const signIn = async (provider) => {
-    await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: `${window.location.origin}${redirectTo}`,
-        queryParams: {
-          prompt: "select_account",
+    // Force logout to ensure user chooses an account
+    await supabase.auth.signOut({ redirectTo: "/" });
+
+    // Wait a tiny bit for logout to clear session
+    setTimeout(async () => {
+      await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/`,
+          queryParams: {
+            prompt: "select_account",
+          },
         },
-      },
-    });
+      });
+    }, 500);
   };
 
   return (
