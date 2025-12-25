@@ -31,7 +31,7 @@ export default function Navbar({ session, dashboards }) {
       {session && (
         <>
           {dashboards.length === 0 && (
-            <button onClick={() => navigate("/login")}>
+            <button onClick={() => navigate("/create-dashboard")}>
               Create Dashboard
             </button>
           )}
@@ -59,7 +59,7 @@ export default function Navbar({ session, dashboards }) {
       {/* RIGHT */}
       {!session ? (
         <>
-          <button onClick={() => navigate("/login")}>
+          <button onClick={() => navigate("/create-dashboard")}>
             Create Dashboard
           </button>
           <button onClick={() => navigate("/login")}>

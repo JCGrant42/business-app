@@ -110,6 +110,7 @@ function AppInner() {
           path="/dashboard/:companyId"
           element={<Dashboard />}
         />
+        <Route path="/create-dashboard" element={<CreateDashboard />} />
         <Route path="/no-access" element={<NoAccess />} />
       </Routes>
     </>
@@ -120,6 +121,6 @@ export default function App() {
   return (
     <>
       <AppInner />
-    </>
+    </> 
   );
 }
