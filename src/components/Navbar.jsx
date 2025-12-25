@@ -1,20 +1,8 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
-export default function Navbar({ session }) {
+export default function Navbar({ session, dashboards }) {
   const navigate = useNavigate();
-  const [dashboards, setDashboards] = useState([]);
-  const [activeDashboard, setActiveDashboard] = useState(null);
-
-  useEffect(() => {
-    if (!session) return;
-
-    supabase.functions.invoke("login-bootstrap").then(({ data }) => {
-      setDashboards(data || []);
-      setActiveDashboard(data?.[0] || null);
-    });
-  }, [session]);
 
   const logout = async () => {
     await supabase.auth.signOut();
@@ -22,8 +10,10 @@ export default function Navbar({ session }) {
     navigate("/");
   };
 
+  const activeDashboard = dashboards?.[0] || null;
+
   return (
-    <nav>
+    <nav style={{ display: "flex", gap: "1rem", padding: "1rem" }}>
       {/* LEFT */}
       <button
         onClick={() => {
@@ -52,13 +42,9 @@ export default function Navbar({ session }) {
 
           {dashboards.length > 1 && (
             <select
-              onChange={(e) => {
-                const d = dashboards.find(
-                  (x) => x.company_id === e.target.value
-                );
-                setActiveDashboard(d);
-                navigate(`/dashboard/${d.company_id}`);
-              }}
+              onChange={(e) =>
+                navigate(`/dashboard/${e.target.value}`)
+              }
             >
               {dashboards.map((d) => (
                 <option key={d.company_id} value={d.company_id}>
@@ -73,15 +59,22 @@ export default function Navbar({ session }) {
       {/* RIGHT */}
       {!session ? (
         <>
-          {/* <button onClick={() => navigate("/")}>Home</button> */}
-          <button onClick={() => navigate("/login")}>Create Dashboard</button>
-          <button onClick={() => navigate("/login")}>Login</button>
+          <button onClick={() => navigate("/login")}>
+            Create Dashboard
+          </button>
+          <button onClick={() => navigate("/login")}>
+            Login
+          </button>
         </>
       ) : (
-        <div>
-          <button onClick={() => navigate("/")}>Marketing Page</button>
-          <button onClick={logout}>Logout</button>
-        </div>
+        <>
+          <button onClick={() => navigate("/")}>
+            Marketing Page
+          </button>
+          <button onClick={logout}>
+            Logout
+          </button>
+        </>
       )}
     </nav>
   );

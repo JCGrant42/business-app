@@ -7,22 +7,41 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const verify = async () => {
-      const { data: sessionData } = await supabase.auth.getSession();
+    let mounted = true;
+
+    const verifyAccess = async () => {
+      const { data: sessionData } =
+        await supabase.auth.getSession();
+
       if (!sessionData.session) {
         navigate("/login");
         return;
       }
 
-      const { data } = await supabase.functions.invoke("login-bootstrap");
-      const allowed = data?.some((c) => c.company_id === companyId);
+      const { data, error } =
+        await supabase.functions.invoke("login-bootstrap");
+
+      if (!mounted) return;
+
+      if (error) {
+        navigate("/no-access");
+        return;
+      }
+
+      const allowed = data?.some(
+        (c) => c.company_id === companyId
+      );
 
       if (!allowed) {
         navigate("/no-access");
       }
     };
 
-    verify();
+    verifyAccess();
+
+    return () => {
+      mounted = false;
+    };
   }, [companyId, navigate]);
 
   return <h1>Dashboard {companyId}</h1>;
