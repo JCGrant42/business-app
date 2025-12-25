@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+//import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 
@@ -26,7 +26,7 @@ export default function App() {
   }, []);
 
   return (
-    <Router>
+    <>
       <Navbar session={session} />
       <Routes>
         <Route path="/" element={<Home session={session} />} />
@@ -34,6 +34,6 @@ export default function App() {
         <Route path="/dashboard/:companyId" element={<Dashboard />} />
         <Route path="/no-access" element={<NoAccess />} />
       </Routes>
-    </Router>
+    </>
   );
 }
