@@ -13,6 +13,9 @@ export default function Login() {
       provider,
       options: {
         redirectTo: `${window.location.origin}${redirectTo}`,
+        queryParams: {
+          prompt: "select_account",
+        },
       },
     });
   };
