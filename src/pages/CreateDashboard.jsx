@@ -34,9 +34,13 @@ export default function CreateDashboard() {
 
     setLoading(true);
 
-    const { data, error } = await supabase.rpc(
-      "create_dashboard",
-      { p_name: name }
+    const { data, error }= await supabase.functions.invoke(
+        "create_dashboard",
+        {
+            body: {
+            name: dashboardName
+            }
+        }
     );
 
     setLoading(false);
