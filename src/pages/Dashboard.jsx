@@ -1,55 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
-import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
+  const { companyId } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [companies, setCompanies] = useState([]);
 
   useEffect(() => {
-    const init = async () => {
-      // 1️⃣ Ensure session is loaded from URL fragment
+    const verify = async () => {
       const { data: sessionData } = await supabase.auth.getSession();
-
       if (!sessionData.session) {
-        navigate("/");
+        navigate("/login");
         return;
       }
 
-      // 2️⃣ CALL THE EDGE FUNCTION (THIS WAS MISSING)
-      const { data, error } = await supabase.functions.invoke(
-        "login-bootstrap"
-      );
+      const { data } = await supabase.functions.invoke("login-bootstrap");
+      const allowed = data?.some((c) => c.company_id === companyId);
 
-      if (error) {
-        console.error("Edge function error:", error);
-        return;
+      if (!allowed) {
+        navigate("/no-access");
       }
-
-      console.log("Companies returned:", data);
-      setCompanies(data);
-      setLoading(false);
     };
 
-    init();
-  }, [navigate]);
+    verify();
+  }, [companyId, navigate]);
 
-  if (loading) return <p>Loading…</p>;
-
-  return (
-    <div>
-      <h1>Dashboard</h1>
-
-      {companies.length === 0 ? (
-        <p>No companies yet</p>
-      ) : (
-        <ul>
-          {companies.map((c) => (
-            <li key={c.company_id}>{c.company_name}</li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+  return <h1>Dashboard {companyId}</h1>;
 }
