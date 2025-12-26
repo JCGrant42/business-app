@@ -11,6 +11,9 @@ export default function Home({ session }) {
           return here via the menu.
         </p>
       )}
+      <button onClick={() => navigate("/create-dashboard")}>
+        Create Dashboard
+      </button>
     </div>
   );
 }
