@@ -8,6 +8,7 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 const VERCEL_DOMAIN = "https://business-app-gray.vercel.app"; // update if needed
+const corsHeaders = { "Content-Type": "application/json", "Access-Control-Allow-Origin": VERCEL_DOMAIN }
 
 Deno.serve(async (req) => {
   try {
@@ -27,7 +28,7 @@ Deno.serve(async (req) => {
     if (!dashboardName || !userId) {
       return new Response(
         JSON.stringify({ success: false, error: "Missing dashboard name or userId" }),
-        { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": VERCEL_DOMAIN }, status: 400 }
+        { headers: corsHeaders, status: 400 }
       );
     }
 
@@ -43,7 +44,7 @@ Deno.serve(async (req) => {
     if (existingDashboards?.length > 0) {
       return new Response(
         JSON.stringify({ success: false, error: "You already have a trial dashboard" }),
-        { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": VERCEL_DOMAIN }, status: 400 }
+        { headers: corsHeaders, status: 400 }
       );
     }
 
@@ -64,13 +65,13 @@ Deno.serve(async (req) => {
 
     return new Response(
       JSON.stringify({ success: true, dashboard: data }),
-      { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": VERCEL_DOMAIN } }
+      { headers: corsHeaders }
     );
 
   } catch (err) {
     return new Response(
       JSON.stringify({ success: false, error: err.message }),
-      { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": VERCEL_DOMAIN }, status: 500 }
+      { headers: corsHeaders, status: 500 }
     );
   }
 });
