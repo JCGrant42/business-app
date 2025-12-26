@@ -17,15 +17,18 @@ Deno.serve(async (req) => {
       return jsonResponse({ success: false, error: "Missing dashboard name or userId" }, 400);
     }
 
+    const body = await req.json();
+    console.log("Request body:", body);
+    
     // 2️⃣ Check if user already has a trial dashboard
     const { data: existingDashboards, error: fetchError } = await supabase
       .from("companies")
       .select("*")
       .eq("owner_id", userId)
       .eq("status", "trial");
-
+    console.log("1");
     if (fetchError) throw fetchError;
-
+    console.log("2");
     if (existingDashboards?.length > 0) {
       return jsonResponse({ success: false, error: "You already have a trial dashboard" }, 400);
     }
@@ -37,12 +40,16 @@ Deno.serve(async (req) => {
       .select()
       .single();
 
-    if (error) throw error;
-
+    if (error) {
+      console.log("Supabase insert error:", error);
+      throw error;
+    }
+    console.log("Insert success:", data);
     // 4️⃣ Success
     return jsonResponse({ success: true, dashboard: data });
 
   } catch (err) {
+    console.log("Caught error:", err);
     return jsonResponse({ success: false, error: err.message }, 500);
   }
 });
