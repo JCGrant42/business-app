@@ -39,13 +39,14 @@ export default function CreateDashboard() {
         {
             body: {
             name: name.trim()
-            }
+            },
         }
     );
 
     setLoading(false);
 
     if (error) {
+      console.error(error);
       alert(error.message);
       return;
     }
