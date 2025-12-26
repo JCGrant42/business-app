@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
-const navigate = useNavigate();
 
 export default function Home({ session }) {
+  const navigate = useNavigate(); // ✅ move inside the component
+
   return (
     <div>
       <h1>Welcome</h1>
@@ -14,9 +15,12 @@ export default function Home({ session }) {
           return here via the menu.
         </p>
       )}
-      <button onClick={() => navigate("/create-dashboard")}>
-        Create Dashboard
-      </button>
+
+      {session && (
+        <button onClick={() => navigate("/create-dashboard")}>
+          Create Dashboard
+        </button>
+      )}
     </div>
   );
 }
