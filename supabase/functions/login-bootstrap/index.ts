@@ -1,56 +1,30 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const VERCEL_DOMAIN = "https://business-app-gray.vercel.app"; // update if needed
-const corsHeaders = {
-  "Access-Control-Allow-Origin": VERCEL_DOMAIN,
-  "Access-Control-Allow-Headers":
-    "authorization, content-type, apikey, x-client-info",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+import { supabase, corsHeaders, handlePreflight, jsonResponse } from "./_helper.ts";
 
 serve(async (req) => {
-  // 1️⃣ Handle CORS preflight
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  // 1️⃣ Handle preflight OPTIONS
+  const preflight = handlePreflight(req);
+  if (preflight) return preflight;
 
   // 2️⃣ Enforce POST only
   if (req.method !== "POST") {
-    return new Response("Not found", { status: 404 });
+    return new Response("Not Found", { status: 404, headers: corsHeaders });
   }
 
   // 3️⃣ Read Authorization header safely
-  const authHeader =
-    req.headers.get("authorization") ||
-    req.headers.get("Authorization");
-
+  const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response("Unauthorized", { status: 401, headers: corsHeaders });
   }
-
   const token = authHeader.replace("Bearer ", "").trim();
 
-  // 4️⃣ Create Supabase client using CORRECT secret names
-  const supabase = createClient(
-    Deno.env.get("PROJECT_URL")!,
-    Deno.env.get("SERVICE_ROLE_KEY")!,
-    {
-      auth: {
-        persistSession: false,
-      },
-    }
-  );
-
-  // 5️⃣ Validate user from access token
-  const { data: userData, error: userError } =
-    await supabase.auth.getUser(token);
-
+  // 4️⃣ Validate user from access token
+  const { data: userData, error: userError } = await supabase.auth.getUser(token);
   if (userError || !userData?.user) {
-    return new Response("Invalid user", { status: 401 });
+    return new Response("Invalid user", { status: 401, headers: corsHeaders });
   }
 
-  // 6️⃣ Call your stored procedure
+  // 5️⃣ Call stored procedure
   const { data, error } = await supabase.rpc(
     "on_login_claim_and_fetch_companies",
     {
@@ -60,20 +34,9 @@ serve(async (req) => {
   );
 
   if (error) {
-    return new Response(JSON.stringify(error), {
-      status: 500,
-      headers: {
-        ...corsHeaders,
-        "Content-Type": "application/json",
-      },
-    });
+    return new Response(JSON.stringify(error), { status: 500, headers: corsHeaders });
   }
 
-  // 7️⃣ Success
-  return new Response(JSON.stringify(data), {
-    headers: {
-      ...corsHeaders,
-      "Content-Type": "application/json",
-    },
-  });
+  // 6️⃣ Success
+  return jsonResponse(data);
 });
