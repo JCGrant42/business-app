@@ -51,10 +51,7 @@ function AppInner() {
             return;
           }
 
-          if (
-            location.pathname === "/" &&
-            dashboardsSafe.length > 0
-          ) {
+          if (dashboardsSafe.length > 0) {
             navigate(
               `/dashboard/${dashboardsSafe[0].company_id}`,
               { replace: true }
