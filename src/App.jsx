@@ -28,33 +28,39 @@ function AppInner() {
     let mounted = true;
 
     const init = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!mounted) return;
-
-      setSession(data.session);
-
-      if (data.session) {
-        const { data: dashboardsData, error } =
-          await supabase.functions.invoke("login-bootstrap");
-
+      try {
+        const { data } = await supabase.auth.getSession();
         if (!mounted) return;
 
-        if (!error && dashboardsData) {
-          setDashboards(dashboardsData);
+        setSession(data.session);
+
+        if (data.session) {
+          const { data: dashboardsData } =
+            await supabase.functions.invoke("login-bootstrap");
+
+          if (!mounted) return;
+
+          if (dashboardsData) {
+            setDashboards(dashboardsData);
+          }
+
+          const redirectTo =
+            localStorage.getItem("postLoginRedirect");
+
+          if (redirectTo) {
+            localStorage.removeItem("postLoginRedirect");
+            navigate(redirectTo, { replace: true });
+          }
         }
-
-        // 🔁 Handle post-login redirect FIRST
-        const redirectTo =
-          localStorage.getItem("postLoginRedirect");
-
-        if (redirectTo) {
-          localStorage.removeItem("postLoginRedirect");
-          navigate(redirectTo, { replace: true });
+      } catch (err) {
+        console.error("Bootstrap error:", err);
+      } finally {
+        if (mounted) {
+          setBootstrapped(true);
         }
       }
-
-      setBootstrapped(true);
     };
+
 
     init();
 
