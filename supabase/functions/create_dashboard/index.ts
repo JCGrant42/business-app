@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
     // 3️⃣ Insert new dashboard with 'trial' status
     const { data, error } = await supabase
       .from("companies")
-      .insert([{ company_name: dashboardName, owner_id: userId, status: "trial" }])
+      .insert([{ company_name: dashboardName, owner_user_id: userId, created_by_user_id: userId, status: "trial" }])
       .select()
       .single();
 
