@@ -12,13 +12,12 @@ Deno.serve(async (req) => {
     if (postCheck) return postCheck;
 
     // 1️⃣ Parse request body
-    const { name: dashboardName, userId } = await req.json();
+    const body = await req.json();
+    console.log("Request body:", body);
+    const { name: dashboardName, userId } = body
     if (!dashboardName || !userId) {
       return jsonResponse({ success: false, error: "Missing dashboard name or userId" }, 400);
     }
-
-    const body = await req.json();
-    console.log("Request body:", body);
     
     // 2️⃣ Check if user already has a trial dashboard
     const { data: existingDashboards, error: fetchError } = await supabase
