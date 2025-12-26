@@ -23,7 +23,7 @@ function AppInner() {
   const [dashboards, setDashboards] = useState([]);
   const [bootstrapped, setBootstrapped] = useState(false);
 
-  // 1️⃣ Bootstrap auth + dashboards
+  // 1️⃣ Bootstrap auth + dashboards + redirect handling
   useEffect(() => {
     let mounted = true;
 
@@ -42,6 +42,15 @@ function AppInner() {
         if (!error && dashboardsData) {
           setDashboards(dashboardsData);
         }
+
+        // 🔁 Handle post-login redirect FIRST
+        const redirectTo =
+          localStorage.getItem("postLoginRedirect");
+
+        if (redirectTo) {
+          localStorage.removeItem("postLoginRedirect");
+          navigate(redirectTo, { replace: true });
+        }
       }
 
       setBootstrapped(true);
@@ -51,17 +60,36 @@ function AppInner() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+    } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        setSession(session);
+
+        if (session) {
+          const { data: dashboardsData, error } =
+            await supabase.functions.invoke("login-bootstrap");
+
+          if (!error && dashboardsData) {
+            setDashboards(dashboardsData);
+          }
+
+          const redirectTo =
+            localStorage.getItem("postLoginRedirect");
+
+          if (redirectTo) {
+            localStorage.removeItem("postLoginRedirect");
+            navigate(redirectTo, { replace: true });
+          }
+        }
+      }
+    );
 
     return () => {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [navigate]);
 
-  // 2️⃣ First-visit redirect logic
+  // 2️⃣ Default dashboard redirect (ONLY if no explicit redirect)
   useEffect(() => {
     if (!bootstrapped) return;
     if (!session) return;
@@ -89,7 +117,7 @@ function AppInner() {
     navigate,
   ]);
 
-  // 3️⃣ Block rendering until bootstrap completes
+  // 3️⃣ Block render until ready
   if (!bootstrapped) {
     return <div>Loading...</div>;
   }
@@ -111,7 +139,10 @@ function AppInner() {
           path="/dashboard/:companyId"
           element={<Dashboard />}
         />
-        <Route path="/create-dashboard" element={<CreateDashboard />} />
+        <Route
+          path="/create-dashboard"
+          element={<CreateDashboard />}
+        />
         <Route path="/no-access" element={<NoAccess />} />
       </Routes>
     </>
@@ -120,8 +151,8 @@ function AppInner() {
 
 export default function App() {
   return (
-    <>
+    <Router>
       <AppInner />
-    </> 
+    </Router>
   );
 }

@@ -31,8 +31,18 @@ export default function Navbar({ session, dashboards }) {
       {session && (
         <>
           {dashboards.length === 0 && (
-            <button onClick={() => navigate("/create-dashboard")}>
-              Create Dashboard
+            <button
+            onClick={() => {
+                if (!session) {
+                // Save where we want to go after login
+                localStorage.setItem("postLoginRedirect", "/create-dashboard");
+                navigate("/login");
+                } else {
+                navigate("/create-dashboard");
+                }
+            }}
+            >
+            Create Dashboard
             </button>
           )}
 
@@ -59,7 +69,17 @@ export default function Navbar({ session, dashboards }) {
       {/* RIGHT */}
       {!session ? (
         <>
-          <button onClick={() => navigate("/create-dashboard")}>
+          <button
+            onClick={() => {
+                if (!session) {
+                // Save where we want to go after login
+                localStorage.setItem("postLoginRedirect", "/create-dashboard");
+                navigate("/login");
+                } else {
+                navigate("/create-dashboard");
+                }
+            }}
+            >
             Create Dashboard
           </button>
           <button onClick={() => navigate("/login")}>
