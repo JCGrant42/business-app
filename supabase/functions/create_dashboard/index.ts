@@ -22,7 +22,7 @@ Deno.serve(async (req) => {
     const { data: existingDashboards, error: fetchError } = await supabase
       .from("companies")
       .select("*")
-      .eq("owner_id", userId)
+      .eq("owner_user_id", userId)
       .eq("status", "trial");
     if (fetchError) throw fetchError;
     if (existingDashboards?.length > 0) {
