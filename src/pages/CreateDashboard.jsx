@@ -25,13 +25,13 @@ export default function CreateDashboard() {
         data?.some((d) => d.status === "trial")
       );
     };
-    console.error("0");
+
     init();
   }, [navigate]);
-  console.error("5");
+
   const create = async () => {
     if (!name.trim()) return;
-    console.error("6");
+    console.error("0");
     setLoading(true);
 
     const { data, error }= await supabase.functions.invoke(
