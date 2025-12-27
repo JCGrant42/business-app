@@ -13,7 +13,6 @@ Deno.serve(async (req) => {
 
     // 1️⃣ Parse request body
     const body = await req.json();
-    return jsonResponse({ success: true, dashboard: body }, 500);
     console.log("Request body:", body);
     const { name: dashboardName, userId } = body
     if (!dashboardName || !userId) {
@@ -46,7 +45,7 @@ Deno.serve(async (req) => {
     }
     console.log("Insert success:", data);
     // 4️⃣ Success
-    return jsonResponse({ success: true, dashboard: data });
+    return jsonResponse({ success: true, dashboard: data }, 200);
 
   } catch (err) {
     console.log("Caught error:", err);
