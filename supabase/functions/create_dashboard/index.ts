@@ -13,7 +13,7 @@ Deno.serve(async (req) => {
 
     // 1️⃣ Parse request body
     const body = await req.json();
-    return body;
+    return jsonResponse({ success: true, dashboard: body });
     console.log("Request body:", body);
     const { name: dashboardName, userId } = body
     if (!dashboardName || !userId) {
