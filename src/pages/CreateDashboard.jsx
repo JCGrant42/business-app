@@ -31,7 +31,7 @@ export default function CreateDashboard() {
 
   const create = async () => {
     if (!name.trim()) return;
-    console.error("0");
+
     setLoading(true);
 
     const { data, error }= await supabase.functions.invoke(
@@ -42,16 +42,11 @@ export default function CreateDashboard() {
             },
         }
     );
-    console.error("1");
-    console.error(data);
-    console.error("2");
 
     setLoading(false);
-    
+
     if (error) {
-      console.error("3");
       console.error(error);
-      console.error("4");
       alert(error.message);
       return;
     }

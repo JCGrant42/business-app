@@ -13,8 +13,6 @@ Deno.serve(async (req) => {
 
     // 1️⃣ Parse request body
     const body = await req.json();
-    return jsonResponse({ success: true, dashboard: body }, 200);
-    console.log("Request body:", body);
     const { name: dashboardName, userId } = body
     if (!dashboardName || !userId) {
       return jsonResponse({ success: false, error: "Missing dashboard name or userId" }, 400);
@@ -26,9 +24,7 @@ Deno.serve(async (req) => {
       .select("*")
       .eq("owner_id", userId)
       .eq("status", "trial");
-    console.log("1");
     if (fetchError) throw fetchError;
-    console.log("2");
     if (existingDashboards?.length > 0) {
       return jsonResponse({ success: false, error: "You already have a trial dashboard" }, 400);
     }
@@ -46,7 +42,7 @@ Deno.serve(async (req) => {
     }
     console.log("Insert success:", data);
     // 4️⃣ Success
-    return jsonResponse({ success: true, dashboard: data }, 200);
+    return jsonResponse({ success: true, dashboard: data });
 
   } catch (err) {
     console.log("Caught error:", err);
