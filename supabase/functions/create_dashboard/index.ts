@@ -8,15 +8,15 @@ import {
 
 Deno.serve(async (req) => {
   try {
-    // 1️⃣ Handle CORS preflight
+    // 1️ Handle CORS preflight
     const preflight = handlePreflight(req);
     if (preflight) return preflight;
 
-    // 2️⃣ Enforce POST
+    // 2️ Enforce POST
     const postCheck = enforcePost(req);
     if (postCheck) return postCheck;
 
-    // 3️⃣ Read Authorization header
+    // 3️ Read Authorization header
     const authHeader =
       req.headers.get("authorization") ??
       req.headers.get("Authorization");
@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
 
     const token = authHeader.replace("Bearer ", "").trim();
 
-    // 4️⃣ Resolve authenticated user
+    // 4️ Resolve authenticated user
     const { data: userData, error: userError } =
       await supabase.auth.getUser(token);
 
@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
 
     const userId = userData.user.id;
 
-    // 5️⃣ Parse request body
+    // 5️ Parse request body
     const { name: dashboardName } = await req.json();
 
     if (!dashboardName) {
@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // 6️⃣ Check for existing trial dashboard
+    // 6️ Check for existing trial dashboard
     const { data: existingDashboards, error: fetchError } =
       await supabase
         .from("companies")
@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // 7️⃣ Insert new dashboard
+    // 7️ Insert new dashboard
     const { data, error } = await supabase
       .from("companies")
       .insert({
@@ -78,7 +78,7 @@ Deno.serve(async (req) => {
 
     if (error) throw error;
 
-    // 8️⃣ Success
+    // 8️ Success
     return jsonResponse({
       success: true,
       dashboard: data,
