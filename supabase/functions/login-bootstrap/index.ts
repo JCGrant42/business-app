@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { supabase, corsHeaders, handlePreflight, jsonResponse } from "./_helper.ts";
+import { supabase, corsHeaders, handlePreflight, jsonResponse } from "../_helper.ts";
 
 serve(async (req) => {
   // 1️⃣ Handle preflight OPTIONS
@@ -7,9 +7,9 @@ serve(async (req) => {
   if (preflight) return preflight;
 
   // 2️⃣ Enforce POST only
-  //if (req.method !== "POST") {
-  return new Response("Not Found", { status: 404, headers: corsHeaders });
-  //}
+  if (req.method !== "POST") {
+    return new Response("Not Found", { status: 404, headers: corsHeaders });
+  }
 
   // 3️⃣ Read Authorization header safely
   const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
