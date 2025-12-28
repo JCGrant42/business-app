@@ -1,5 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { supabase, corsHeaders, handlePreflight, enforcePost, jsonResponse } from "./_helper.ts";
+import { supabase, corsHeaders, handlePreflight, enforcePost, jsonResponse } from "../_helper.ts";
 
 Deno.serve(async (req) => {
   try {
