@@ -4,7 +4,7 @@ import {
   handlePreflight,
   enforcePost,
   jsonResponse,
-} from "./_helper.ts";
+} from "../_helper.ts";
 
 Deno.serve(async (req) => {
   try {
