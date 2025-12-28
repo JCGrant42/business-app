@@ -7,9 +7,9 @@ serve(async (req) => {
   if (preflight) return preflight;
 
   // 2️⃣ Enforce POST only
-  if (req.method !== "POST") {
-    return new Response("Not Found", { status: 404, headers: corsHeaders });
-  }
+  //if (req.method !== "POST") {
+  return new Response("Not Found", { status: 404, headers: corsHeaders });
+  //}
 
   // 3️⃣ Read Authorization header safely
   const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
