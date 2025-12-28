@@ -18,7 +18,7 @@ Deno.serve(async (req) => {
 
     // 3️ Read Authorization header
     const authHeader =
-      req.headers.get("authorization") ??
+      req.headers.get("authorization") ||
       req.headers.get("Authorization");
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
