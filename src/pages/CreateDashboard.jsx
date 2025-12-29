@@ -39,11 +39,15 @@ export default function CreateDashboard() {
     console.log("2");
     console.log("SESSION:", session);
     console.log("3");
+    
     const { data, error }= await supabase.functions.invoke(
         "create_dashboard",
         {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+            },
             body: {
-            name: name.trim()
+              name: name.trim()
             },
         }
     );
