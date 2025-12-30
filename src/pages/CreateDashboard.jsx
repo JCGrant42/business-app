@@ -38,6 +38,14 @@ export default function CreateDashboard({ session, dashboards, setDashboards }) 
       alert(error.message);
       return;
     }
+    dashboards
+    if (data.success) {
+      console.log(dashboards)
+      console.log("attempting to add")
+      setDashboards(prev => [...prev, newDash]);
+      console.log(dashboards)
+
+    }
 
     console.log(data)
     navigate(`/dashboard/${data.dashboard.id}`);
