@@ -28,42 +28,17 @@ export default function Navbar({ session, dashboards }) {
       </button>
 
       {/* DASHBOARD SELECTOR */}
-      {session && (
-        <>
-          {dashboards.length === 0 && (
-            <button
-            onClick={() => {
-                if (!session) {
-                // Save where we want to go after login
-                localStorage.setItem("postLoginRedirect", "/create-dashboard");
-                navigate("/login");
-                } else {
-                navigate("/create-dashboard");
-                }
-            }}
-            >
-            Create Dashboard
-            </button>
-          )}
-
-          {dashboards.length === 1 && (
-            <span>{dashboards[0].company_name}</span>
-          )}
-
-          {dashboards.length > 1 && (
-            <select
-              onChange={(e) =>
-                navigate(`/dashboard/${e.target.value}`)
-              }
-            >
-              {dashboards.map((d) => (
-                <option key={d.company_id} value={d.company_id}>
-                  {d.company_name}
-                </option>
-              ))}
-            </select>
-          )}
-        </>
+      {session && dashboards.length > 0 && (
+        <select
+          value={activeDashboard?.company_id || ""}
+          onChange={(e) => navigate(`/dashboard/${e.target.value}`)}
+        >
+          {dashboards.map((d) => (
+            <option key={d.company_id} value={d.company_id}>
+              {d.company_name}
+            </option>
+          ))}
+        </select>
       )}
 
       {/* RIGHT */}
@@ -71,29 +46,22 @@ export default function Navbar({ session, dashboards }) {
         <>
           <button
             onClick={() => {
-                if (!session) {
-                // Save where we want to go after login
+              if (!session) {
                 localStorage.setItem("postLoginRedirect", "/create-dashboard");
                 navigate("/login");
-                } else {
+              } else {
                 navigate("/create-dashboard");
-                }
+              }
             }}
-            >
+          >
             Create Dashboard
           </button>
-          <button onClick={() => navigate("/login")}>
-            Login
-          </button>
+          <button onClick={() => navigate("/login")}>Login</button>
         </>
       ) : (
         <>
-          <button onClick={() => navigate("/")}>
-            Marketing Page
-          </button>
-          <button onClick={logout}>
-            Logout
-          </button>
+          <button onClick={() => navigate("/")}>Marketing Page</button>
+          <button onClick={logout}>Logout</button>
         </>
       )}
     </nav>
