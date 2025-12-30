@@ -39,7 +39,7 @@ export default function CreateDashboard({ session, dashboards, setDashboards }) 
       return;
     }
 
-    console.log(data.dashboard.id)
+    console.log(data)
     navigate(`/dashboard/${data.dashboard.id}`);
   };
 
