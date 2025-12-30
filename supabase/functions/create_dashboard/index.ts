@@ -2,13 +2,6 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { supabase, corsHeaders, handlePreflight, jsonResponse } from "./_helper.ts";
 
 serve(async (req) => {
-return jsonResponse({
-  hasProjectUrl: !!Deno.env.get("PROJECT_URL"),
-  hasServiceRoleKey: !!Deno.env.get("SERVICE_ROLE_KEY"),
-  projectUrlLength: Deno.env.get("PROJECT_URL")?.length ?? 0,
-  serviceRoleKeyLength: Deno.env.get("SERVICE_ROLE_KEY")?.length ?? 0,
-});
-
   // 1️⃣ Handle preflight OPTIONS
   const preflight = handlePreflight(req);
   if (preflight) return preflight;
