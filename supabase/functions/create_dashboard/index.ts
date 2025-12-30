@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { supabase, corsHeaders, handlePreflight, jsonResponse } from "../_helper.ts";
+import { supabase, corsHeaders, handlePreflight, jsonResponse } from "./_helper.ts";
 
 serve(async (req) => {
   // 1️⃣ Handle preflight OPTIONS
@@ -12,9 +12,7 @@ serve(async (req) => {
   }
 
   // 3️⃣ Read Authorization header
-  const authHeader =
-    req.headers.get("authorization") ??
-    req.headers.get("Authorization");
+  const authHeader = req.headers.get("authorization") ?? req.headers.get("Authorization");
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return new Response("Unauthorized", { status: 401, headers: corsHeaders });
