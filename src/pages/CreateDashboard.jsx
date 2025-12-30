@@ -53,7 +53,7 @@ export default function CreateDashboard() {
       return;
     }
     console.log(data)
-    navigate(`/dashboard/${data}`);
+    navigate(`/dashboard/${data.id}`);
   };
 
   return (
