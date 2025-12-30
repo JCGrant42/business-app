@@ -52,7 +52,7 @@ export default function CreateDashboard() {
       alert(error.message);
       return;
     }
-    console.log(data)
+    console.log(data.id)
     navigate(`/dashboard/${data.id}`);
   };
 
