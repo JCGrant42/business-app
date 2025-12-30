@@ -28,14 +28,7 @@ export default function CreateDashboard() {
 
   const create = async () => {
     if (!name.trim()) return;
-    console.log("1");
     setLoading(true);
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    console.log("2");
-    console.log("SESSION:", session);
-    console.log("3");
     
     const { data, error }= await supabase.functions.invoke(
         "create_dashboard",
@@ -52,8 +45,8 @@ export default function CreateDashboard() {
       alert(error.message);
       return;
     }
-    console.log(data)
-    navigate(`/dashboard/${data}`);
+    console.log(data.dashboard.id)
+    navigate(`/dashboard/${data.dashboard.id}`);
   };
 
   return (
