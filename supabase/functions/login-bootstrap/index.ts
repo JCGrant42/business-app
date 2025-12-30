@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { supabase, corsHeaders, handlePreflight, jsonResponse } from "../_helper.ts";
+import { supabase, corsHeaders, handlePreflight, jsonResponse } from "./_helper.ts";
 
 serve(async (req) => {
   // 1️⃣ Handle preflight OPTIONS

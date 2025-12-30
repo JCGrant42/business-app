@@ -45,19 +45,14 @@ export default function CreateDashboard() {
             },
         }
     );
-    console.log("4");
     setLoading(false);
-    console.log(data);
-    console.log("5");
-    console.log(error);
-    console.log("6");
 
     if (error) {
       console.error(error);
       alert(error.message);
       return;
     }
-
+    console.log(data)
     navigate(`/dashboard/${data}`);
   };
 
