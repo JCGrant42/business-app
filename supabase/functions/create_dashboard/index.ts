@@ -52,7 +52,7 @@ serve(async (req) => {
     .eq("status", "trial");
 
   if (fetchError) {
-    return jsonResponse(fetchError, 502);
+    return jsonResponse(fetchError, 500);
   }
 
   if (existing.length > 0) {
@@ -75,7 +75,7 @@ serve(async (req) => {
     .single();
 
   if (insertError) {
-    return jsonResponse(insertError, 500);
+    return jsonResponse(insertError, 502);
   }
 
   // 8️⃣ Success
