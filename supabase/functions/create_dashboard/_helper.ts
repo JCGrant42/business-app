@@ -1,10 +1,24 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js";
 
-// Supabase client
+const supabaseUrl = Deno.env.get("PROJECT_URL")!;
+const serviceRoleKey = Deno.env.get("SERVICE_ROLE_KEY")!;
+
 export const supabase = createClient(
-    Deno.env.get("PROJECT_URL")!,
-    Deno.env.get("SERVICE_ROLE_KEY")!,
+  supabaseUrl,
+  serviceRoleKey,
+  {
+    auth: {
+      persistSession: false,
+    },
+    global: {
+      headers: {
+        Authorization: `Bearer ${serviceRoleKey}`,
+        apikey: serviceRoleKey,
+      },
+    },
+  }
 );
+
 
 // CORS headers
 export const VERCEL_DOMAIN = "https://business-app-gray.vercel.app";
