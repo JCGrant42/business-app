@@ -52,8 +52,8 @@ export default function CreateDashboard() {
       alert(error.message);
       return;
     }
-    console.log(data.id)
-    navigate(`/dashboard/${data.id}`);
+    console.log(data)
+    navigate(`/dashboard/${data}`);
   };
 
   return (
