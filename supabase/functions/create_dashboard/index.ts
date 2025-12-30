@@ -66,7 +66,7 @@ serve(async (req) => {
   const { data: dashboard, error: insertError } = await supabase
     .from("companies")
     .insert({
-      company_name: dashboardName,
+      name: dashboardName,
       owner_user_id: userId,
       created_by_user_id: userId,
       status: "trial",
