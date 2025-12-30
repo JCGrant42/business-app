@@ -52,7 +52,7 @@ serve(async (req) => {
     .eq("status", "trial");
 
   if (fetchError) {
-    return jsonResponse(fetchError, 500);
+    return jsonResponse(fetchError, 502);
   }
 
   if (existing.length > 0) {
