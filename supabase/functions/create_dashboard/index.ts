@@ -1,8 +1,7 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { supabase, corsHeaders, handlePreflight, jsonResponse } from "../_helper.ts";
+import { supabase, corsHeaders, handlePreflight, jsonResponse } from "./_helper.ts";
 
 serve(async (req) => {
-  console.log("SERVICE_ROLE_KEY exists:", !!Deno.env.get("SERVICE_ROLE_KEY"));
 
   // 1️⃣ Handle preflight OPTIONS
   const preflight = handlePreflight(req);
