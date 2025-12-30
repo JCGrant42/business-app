@@ -106,7 +106,11 @@ function AppInner() {
         />
         <Route
           path="/create-dashboard"
-          element={<CreateDashboard />}
+          element={<CreateDashboard  
+            session={session}
+            dashboards={dashboards}
+            setDashboards={setDashboards}
+          />}
         />
         <Route path="/no-access" element={<NoAccess />} />
       </Routes>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
-export default function CreateDashboard() {
+export default function CreateDashboard({ session, dashboards, setDashboards }) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -10,17 +10,10 @@ export default function CreateDashboard() {
 
   useEffect(() => {
     const init = async () => {
-      const { data: sessionData } =
-        await supabase.auth.getSession();
-
-      if (!sessionData.session) {
+      if (!session) {
         navigate("/login?redirect=/create-dashboard");
         return;
       }
-
-      const { data } =
-        await supabase.functions.invoke("login-bootstrap");
-
     };
 
     init();
@@ -45,6 +38,7 @@ export default function CreateDashboard() {
       alert(error.message);
       return;
     }
+
     console.log(data.dashboard.id)
     navigate(`/dashboard/${data.dashboard.id}`);
   };
