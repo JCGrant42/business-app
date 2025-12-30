@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { supabase, corsHeaders, handlePreflight, jsonResponse } from "../_helper.ts";
 
 serve(async (req) => {
+   return new Response("Not Found", { status: 404, headers: corsHeaders });
   // 1️⃣ Handle preflight OPTIONS
   const preflight = handlePreflight(req);
   if (preflight) return preflight;

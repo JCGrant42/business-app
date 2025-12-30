@@ -21,9 +21,6 @@ export default function CreateDashboard() {
       const { data } =
         await supabase.functions.invoke("login-bootstrap");
 
-      setHasTrial(
-        data?.some((d) => d.status === "trial")
-      );
     };
 
     init();
@@ -43,9 +40,6 @@ export default function CreateDashboard() {
     const { data, error }= await supabase.functions.invoke(
         "create_dashboard",
         {
-            headers: {
-              Authorization: `Bearer ${session.access_token}`,
-            },
             body: {
               name: name.trim()
             },
