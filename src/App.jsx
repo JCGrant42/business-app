@@ -108,7 +108,7 @@ function AppInner() {
           path="/create-dashboard"
           element={<CreateDashboard />}
         />
-        
+        <Route path="/no-access" element={<NoAccess />} />
       </Routes>
     </>
   );
