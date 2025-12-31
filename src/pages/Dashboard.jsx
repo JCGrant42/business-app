@@ -17,6 +17,9 @@ export default function Dashboard({ session, dashboards }) {
       console.log("starting bootstrap");
       const { data, error } =
         await supabase.functions.invoke("login-bootstrap");
+
+
+      console.log("dashboards data:", dashboards);
       console.log("bootstrap data:", data);
       if (!mounted) return;
 
