@@ -1,9 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import { useMemo } from "react";
 
 export default function Navbar({ session, dashboards = [] }) {
   const navigate = useNavigate();
-  const { companyId } = useParams(); // /dashboard/:companyId
+  const { companyId } = useParams(); // URL uses company_id
 
   const logout = async () => {
     await supabase.auth.signOut();
@@ -11,17 +12,29 @@ export default function Navbar({ session, dashboards = [] }) {
     navigate("/");
   };
 
-  // Find the currently active dashboard from the URL
-  const activeDashboard =
-    dashboards.find(d => d.company_id === companyId) || dashboards[0] || null;
+  /**
+   * Resolve active dashboard from URL → dashboards
+   * Falls back safely if data loads late or URL is missing
+   */
+  const activeDashboard = useMemo(() => {
+    if (!dashboards.length) return null;
+
+    return (
+      dashboards.find(d => d.company_id === companyId) ||
+      dashboards[0]
+    );
+  }, [dashboards, companyId]);
+
+  const activeDashboardId = activeDashboard?.company_id || "";
+  const activeDashboardName = activeDashboard?.company_name || "";
 
   return (
     <nav style={{ display: "flex", gap: "1rem", padding: "1rem" }}>
       {/* LEFT */}
       <button
         onClick={() => {
-          if (activeDashboard) {
-            navigate(`/dashboard/${activeDashboard.company_id}`);
+          if (activeDashboardId) {
+            navigate(`/dashboard/${activeDashboardId}`);
           } else {
             navigate("/");
           }
@@ -30,7 +43,7 @@ export default function Navbar({ session, dashboards = [] }) {
         Home
       </button>
 
-      {/* DASHBOARD SELECTOR */}
+      {/* DASHBOARD DISPLAY / SELECTOR */}
       {session && (
         <>
           {dashboards.length === 0 && (
@@ -47,16 +60,19 @@ export default function Navbar({ session, dashboards = [] }) {
             </button>
           )}
 
-          {dashboards.length === 1 && activeDashboard && (
-            <span>{activeDashboard.company_name}</span>
+          {/* Single dashboard → plain text */}
+          {dashboards.length === 1 && activeDashboardName && (
+            <span>{activeDashboardName}</span>
           )}
 
-          {dashboards.length > 1 && activeDashboard && (
+          {/* Multiple dashboards → controlled select */}
+          {dashboards.length > 1 && activeDashboardId && (
             <select
-              value={activeDashboard.company_id}
-              onChange={(e) =>
-                navigate(`/dashboard/${e.target.value}`)
-              }
+              value={activeDashboardId}
+              onChange={(e) => {
+                const newId = e.target.value;
+                navigate(`/dashboard/${newId}`);
+              }}
             >
               {dashboards.map((d) => (
                 <option key={d.company_id} value={d.company_id}>
