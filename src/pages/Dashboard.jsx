@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
-export default function Dashboard() {
+export default function Dashboard({ session, dashboards }) {
   const { companyId } = useParams();
   const navigate = useNavigate();
 
@@ -10,10 +10,7 @@ export default function Dashboard() {
     let mounted = true;
 
     const verifyAccess = async () => {
-      const { data: sessionData } =
-        await supabase.auth.getSession();
-
-      if (!sessionData.session) {
+      if (!session) {
         navigate("/login");
         return;
       }
@@ -23,7 +20,7 @@ export default function Dashboard() {
 
       if (!mounted) return;
 
-      if (error) {
+      if (error) { //need to make sure that the user is still rejected if invalid
         navigate("/no-access");
         return;
       }
