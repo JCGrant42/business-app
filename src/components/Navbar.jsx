@@ -1,8 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom"; // NEW
 import { supabase } from "../supabaseClient";
 
 export default function Navbar({ session, dashboards }) {
   const navigate = useNavigate();
+  const { companyId } = useParams(); // NEW — read active dashboard ID from URL
 
   const logout = async () => {
     await supabase.auth.signOut();
@@ -10,7 +11,14 @@ export default function Navbar({ session, dashboards }) {
     navigate("/");
   };
 
-  const activeDashboard = dashboards?.[0] || null;
+  // const activeDashboard = dashboards?.[0] || null;
+  // ^ OLD: this always picked the first dashboard (wrong)
+
+  // NEW — resolve active dashboard from URL
+  const activeDashboard =
+    dashboards?.find(d => d.company_id === companyId) ||
+    dashboards?.[0] ||
+    null;
 
   return (
     <nav style={{ display: "flex", gap: "1rem", padding: "1rem" }}>
@@ -32,17 +40,19 @@ export default function Navbar({ session, dashboards }) {
         <>
           {dashboards.length === 0 && (
             <button
-            onClick={() => {
+              onClick={() => {
                 if (!session) {
-                // Save where we want to go after login
-                localStorage.setItem("postLoginRedirect", "/create-dashboard");
-                navigate("/login");
+                  localStorage.setItem(
+                    "postLoginRedirect",
+                    "/create-dashboard"
+                  );
+                  navigate("/login");
                 } else {
-                navigate("/create-dashboard");
+                  navigate("/create-dashboard");
                 }
-            }}
+              }}
             >
-            Create Dashboard
+              Create Dashboard
             </button>
           )}
 
@@ -52,9 +62,14 @@ export default function Navbar({ session, dashboards }) {
 
           {dashboards.length > 1 && (
             <select
-              onChange={(e) =>
-                navigate(`/dashboard/${e.target.value}`)
-              }
+              // NEW — controlled select synced with URL
+              value={activeDashboard?.company_id || ""} // NEW
+              // onChange={(e) =>
+              //   navigate(`/dashboard/${e.target.value}`)
+              // }
+              onChange={(e) => { // NEW
+                navigate(`/dashboard/${e.target.value}`); // NEW
+              }}
             >
               {dashboards.map((d) => (
                 <option key={d.company_id} value={d.company_id}>
@@ -71,15 +86,17 @@ export default function Navbar({ session, dashboards }) {
         <>
           <button
             onClick={() => {
-                if (!session) {
-                // Save where we want to go after login
-                localStorage.setItem("postLoginRedirect", "/create-dashboard");
+              if (!session) {
+                localStorage.setItem(
+                  "postLoginRedirect",
+                  "/create-dashboard"
+                );
                 navigate("/login");
-                } else {
+              } else {
                 navigate("/create-dashboard");
-                }
+              }
             }}
-            >
+          >
             Create Dashboard
           </button>
           <button onClick={() => navigate("/login")}>
