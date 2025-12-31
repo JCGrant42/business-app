@@ -42,7 +42,8 @@ export default function CreateDashboard({ session, dashboards, setDashboards }) 
     if (data.success) {
       console.log(dashboards)
       console.log("attempting to add")
-      setDashboards(prev => [...prev, data]);
+      const newArray = [...dashboards, data.dashboard];
+      setDashboards(newArray);
       console.log(dashboards)
 
     }
