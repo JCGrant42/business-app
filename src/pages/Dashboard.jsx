@@ -15,17 +15,9 @@ export default function Dashboard({ session, dashboards }) {
         return;
       }
 
-      const { data, error } =
-        await supabase.functions.invoke("login-bootstrap");
-
       if (!mounted) return;
 
-      if (error) { //need to make sure that the user is still rejected if invalid
-        navigate("/no-access");
-        return;
-      }
-
-      const allowed = data?.some(
+      const allowed = dashboards?.some(
         (c) => c.company_id === companyId
       );
 
