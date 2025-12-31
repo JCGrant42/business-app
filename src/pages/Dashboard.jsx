@@ -14,13 +14,14 @@ export default function Dashboard({ session, dashboards }) {
         navigate("/login");
         return;
       }
-
+      console.log("starting bootstrap");
       const { data, error } =
         await supabase.functions.invoke("login-bootstrap");
-
+      console.log("bootstrap data:", data);
       if (!mounted) return;
 
       if (error) { //need to make sure that the user is still rejected if invalid
+        console.log("bootstrap error:", error);
         navigate("/no-access");
         return;
       }
@@ -28,6 +29,7 @@ export default function Dashboard({ session, dashboards }) {
       const allowed = data?.some(
         (c) => c.company_id === companyId
       );
+      console.log("is allowed:", allowed);
 
       if (!allowed) {
         navigate("/no-access");
