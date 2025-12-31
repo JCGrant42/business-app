@@ -30,7 +30,7 @@ function AppInner() {
       try {
         const { data } = await supabase.auth.getSession();
         if (!mounted) return;
-
+        console.log("Initial session:", data);
         setSession(data.session);
 
         if (data.session) {
@@ -102,7 +102,10 @@ function AppInner() {
         <Route path="/login" element={<Login />} />
         <Route
           path="/dashboard/:companyId"
-          element={<Dashboard />}
+          element={<Dashboard 
+            session={session}
+            dashboards={dashboards}
+          />}
         />
         <Route
           path="/create-dashboard"
